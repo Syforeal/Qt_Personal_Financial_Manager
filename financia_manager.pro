@@ -1,4 +1,4 @@
-QT       += core gui sql
+QT       += core gui sql network# widget
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -9,11 +9,18 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    api.cpp \
+    database.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    transaction.cpp
 
 HEADERS += \
-    mainwindow.h
+    account.h \
+    api.h \
+    database.h \
+    mainwindow.h \
+    transaction.h
 
 FORMS += \
     mainwindow.ui

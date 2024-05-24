@@ -13,7 +13,80 @@
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
-  <widget class="QWidget" name="centralwidget"/>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QPushButton" name="addAccountButton">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>47</y>
+      <width>101</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>添加账户</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="addTransactionButton">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>87</y>
+      <width>101</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>添加交易</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="transferFundsButton">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>127</y>
+      <width>101</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>资金转移</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="importTransactionsButton">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>167</y>
+      <width>131</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>批量导入交易</string>
+    </property>
+   </widget>
+   <widget class="QListView" name="accountListView">
+    <property name="geometry">
+     <rect>
+      <x>220</x>
+      <y>30</y>
+      <width>81</width>
+      <height>192</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QTableView" name="transactionTableView">
+    <property name="geometry">
+     <rect>
+      <x>320</x>
+      <y>30</y>
+      <width>421</width>
+      <height>192</height>
+     </rect>
+    </property>
+   </widget>
+  </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
