@@ -236,7 +236,7 @@ void ingoalsWindow::showprogress()
     QDate currentdate=QDate::currentDate() ;
     for (const QModelIndex &index : selectedIndexes) {
         amount = savingModel->data(savingModel->index(index.row(), 1)).toDouble();
-        startdate = savingModel->data(savingModel->index(index.row(), 2)).toDate();
+        startdate = savingModel->data(savingModel->index(index.row(), 2)).toDate()addDays(-1);
         enddate = savingModel->data(savingModel->index(index.row(), 3)).toDate();
     }
     QList<Transaction> transactions = API::getTransactions(currentAccountId);
