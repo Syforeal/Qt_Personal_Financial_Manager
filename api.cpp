@@ -18,9 +18,9 @@ bool API::addAccount(const Account& account) {
     return Database::addAccount(account);
 }
 
-bool API::updateAccount(const Account& account) {
-    return Database::updateAccount(account);
-}
+//bool API::updateAccount(const Account& account) {
+//    return Database::updateAccount(account);
+//}
 
 bool API::deleteAccount(const QString& accountId) {
     return Database::deleteAccount(accountId);
@@ -37,6 +37,51 @@ Transaction API::getTransaction(const QString& transactionId){//新增，未使�
 bool API::addTransaction(const Transaction& transaction) {
     return Database::addTransaction(transaction);
 }
+
+bool API::updateTransaction(const Transaction& transaction) {
+    return Database::updateTransaction(transaction);
+}
+
+bool API::deleteTransaction(const QString& transactionId){
+    return Database::deleteTransaction(transactionId);
+}
+
+QList<bill> API::getBills(const QString& accountId){
+    return Database::getBills(accountId);
+}
+
+bool API::addBill(const bill& bill) {
+    return Database::addBill(bill);
+}
+
+bool API::deleteBill(const QString& billId){
+    return Database::deleteBill(billId);
+}
+
+QList<saving> API::getsavings(const QString& accountId){
+    return Database::getsavings(accountId);
+}
+
+bool API::addsaving(const saving& saving) {
+    return Database::addsaving(saving);
+}
+
+bool API::deleteSaving(const QString& savingId){
+    return Database::deleteSaving(savingId);
+}
+//新增过滤功能
+QStringList API::getAllCategories(const QString &accountId) {
+    return Database::getAllCategories(accountId);
+}
+
+QList<Transaction> API::getTransactions(const QString &accountId, const QString &category, const QDate &startDate, const QDate &endDate, double minAmount, double maxAmount){
+    return Database::getTransactions(accountId, category, startDate, endDate, minAmount, maxAmount);
+}
+
+QList<Transaction> API::searchTransactions(const QString &accountId, const QString &category, const QDate &startDate, const QDate &endDate, double minAmount, double maxAmount){
+    return Database::searchTransactions(accountId, category, startDate, endDate, minAmount, maxAmount);
+}
+
 
 bool API::transferFunds(const QString& fromAccountId, const QString& toAccountId, double amount) {
     return Database::transferFunds(fromAccountId, toAccountId, amount);
@@ -71,3 +116,9 @@ bool API::importTransactionsFromFile(const QString& filePath, const QString& acc
     return Database::addTransactions(transactions);
 }
 
+//图表
+//获取所有交易记录
+QList<Transaction> API::getAllTransactions(){
+    qDebug() << "Fetching all transactions...";
+    return Database::getAllTransactions();
+}

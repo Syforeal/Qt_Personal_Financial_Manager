@@ -1,10 +1,11 @@
-#ifndef TRANSACTION_H
-#define TRANSACTION_H
+#ifndef BILL_H
+#define BILL_H
 
-#include <QString>
+#include <QObject>
 #include <QDate>
 
-class Transaction {
+class bill
+{
 public:
     QString id;
     QString accountId;
@@ -12,4 +13,5 @@ public:
     QDate date;
     QString category;
 };
-#endif // TRANSACTION_H
+
+#endif // BILL_H

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>MainWindow</class>
- <widget class="QMainWindow" name="MainWindow">
+ <class>GraphWindow</class>
+ <widget class="QMainWindow" name="GraphWindow">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -14,73 +14,63 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QListView" name="accountListView">
+   <widget class="QWidget" name="chartWidget" native="true">
     <property name="geometry">
      <rect>
-      <x>110</x>
-      <y>30</y>
-      <width>81</width>
-      <height>151</height>
+      <x>30</x>
+      <y>20</y>
+      <width>561</width>
+      <height>231</height>
      </rect>
     </property>
    </widget>
-   <widget class="QTableView" name="transactionTableView">
+   <widget class="QPushButton" name="generateReportButton">
     <property name="geometry">
      <rect>
-      <x>110</x>
-      <y>230</y>
-      <width>421</width>
-      <height>211</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="searchButton">
-    <property name="geometry">
-     <rect>
-      <x>440</x>
-      <y>200</y>
-      <width>80</width>
+      <x>600</x>
+      <y>40</y>
+      <width>101</width>
       <height>21</height>
      </rect>
     </property>
     <property name="text">
-     <string>筛选</string>
+     <string>年收支趋势</string>
     </property>
    </widget>
-   <widget class="QComboBox" name="startMonthComboBox">
+   <widget class="QPushButton" name="CategoryExpenseReportButton">
     <property name="geometry">
      <rect>
-      <x>220</x>
-      <y>30</y>
-      <width>71</width>
-      <height>22</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLabel" name="incomeLabel">
-    <property name="geometry">
-     <rect>
-      <x>220</x>
-      <y>70</y>
-      <width>201</width>
+      <x>540</x>
+      <y>313</y>
+      <width>171</width>
       <height>31</height>
      </rect>
     </property>
     <property name="text">
-     <string>TextLabel</string>
+     <string>支出分布</string>
     </property>
    </widget>
-   <widget class="QLabel" name="expenseLabel">
+   <widget class="QWidget" name="chartWidget_2" native="true">
     <property name="geometry">
      <rect>
-      <x>220</x>
-      <y>120</y>
-      <width>211</width>
+      <x>30</x>
+      <y>260</y>
+      <width>451</width>
+      <height>291</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="CategoryIncomeReportButton">
+    <property name="geometry">
+     <rect>
+      <x>540</x>
+      <y>360</y>
+      <width>171</width>
       <height>31</height>
      </rect>
     </property>
     <property name="text">
-     <string>TextLabel</string>
+     <string>收入分布</string>
     </property>
    </widget>
   </widget>
@@ -93,12 +83,12 @@
      <height>17</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menuPersonal_Financial_Manager">
+   <widget class="QMenu" name="menupersonal_financial_manager">
     <property name="title">
-     <string>Personal Financial Manager主菜单</string>
+     <string>personal financial manager 图表</string>
     </property>
    </widget>
-   <addaction name="menuPersonal_Financial_Manager"/>
+   <addaction name="menupersonal_financial_manager"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>

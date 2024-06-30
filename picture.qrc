@@ -1,0 +1,27 @@
+<RCC>
+    <qresource prefix="/new/background">
+        <file>image/background.jpg</file>
+        <file>image/OIP.jpg</file>
+    </qresource>
+    <qresource prefix="/new/button">
+        <file>image/exitbutton.jpeg</file>
+        <file>image/addtransactionbutton.jpeg</file>
+        <file>image/addaccountbutton.jpeg</file>
+        <file>image/graphbutton.jpeg</file>
+        <file>image/financialgoalsbutton.jpeg</file>
+        <file>image/importbutton.jpeg</file>
+        <file>image/returnbutton.jpg</file>
+        <file>image/transactiondetailsbutton.jpeg</file>
+        <file>image/transferfundsbutton.jpeg</file>
+        <file>image/tendbutton.jpeg</file>
+        <file>image/outbutton.jpeg</file>
+        <file>image/inbutton.jpeg</file>
+        <file>image/ingoalsButton.jpg</file>
+        <file>image/outgoalsButton.jpg</file>
+        <file>image/billbutton.jpeg</file>
+        <file>image/searchbutton.jpg</file>
+        <file>image/addbutton.png</file>
+        <file>image/createbutton.jpg</file>
+        <file>image/savebutton.png</file>
+    </qresource>
+</RCC>

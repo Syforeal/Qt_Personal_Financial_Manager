@@ -1,6 +1,24 @@
 #include "mainwindow.h"
 #include "database.h"
-
+#include "transactionwindow.h"
+#include "financialgoalswindow.h"
+#include "billwindow.h"
+#include "graphwindow.h"
+#include "ingoalswindow.h"
+#include "outgoalswindow.h"
+#include "api.h"
+#include "database.h"
+#include <QMessageBox>
+#include <QUuid>
+#include <QInputDialog>
+#include <QStandardItemModel>
+#include <QFileDialog>
+#include <QStringListModel>
+#include <QPushButton>
+#include <QToolBar>
+#include <QMenu>
+#include <QIcon>
+#include <QDate>
 #include <QApplication>
 #include <QLocale>
 #include <QTranslator>
@@ -15,6 +33,8 @@
 #include <QJsonArray>
 #include <QFile>
 #include <QDebug>
+#include <QtCore>
+#include <QObject>
 /*
 class WeChatBillFetcher : public QObject {
     Q_OBJECT
@@ -80,6 +100,7 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
+
     // 打开数据库连接
     if (!Database::openDatabase()) {
         qFatal("Failed to open database.");
@@ -97,5 +118,60 @@ int main(int argc, char *argv[])
     }
     MainWindow w;
     w.show();
+    QList<Account> Accounts=API::getAccounts();
+    qDebug()<<Accounts.size();
+    for(int i=0;i<Accounts.size();i++)
+    {
+        QList<bill> bills=API::getBills(Accounts[i].name);
+        for(int j=0;j<bills.size();j++)
+        {
+            QDate startDate = QDate::currentDate();
+            QDate endDate = bills[j].date;
+            if(startDate.daysTo(endDate) == 0)
+            {
+                QMessageBox msgBox;
+                QString str = QString::number(bills[j].amount);
+                msgBox.setText(Accounts[i].name +" "+ bills[j].date.toString() +" "+ bills[j].category +" "+ str +"元");  // 设置文本内容
+                msgBox.setWindowTitle("账单到期提醒(已到期）");  // 设置标题
+                msgBox.setIcon(QMessageBox::Information);  // 设置图标
+                msgBox.addButton(QMessageBox::Ok);  // 添加按钮
+                msgBox.exec();
+            }
+            else if(startDate.daysTo(endDate)<=5&&startDate.daysTo(endDate)>0)
+            {
+                QMessageBox msgBox;
+                QString str = QString::number(bills[j].amount);
+                msgBox.setText(Accounts[i].name +" "+ bills[j].date.toString() +" "+ bills[j].category +" "+ str +"元" +" 剩余 "+QString::number(startDate.daysTo(endDate))+" 天");  // 设置文本内容
+                msgBox.setWindowTitle("账单到期提醒(即将到期）");  // 设置标题
+                msgBox.setIcon(QMessageBox::Information);  // 设置图标
+                msgBox.addButton(QMessageBox::Ok);  // 添加按钮
+                msgBox.exec();
+            }
+        }
+    }
+    TransactionWindow tw;
+    financialgoalswindow fw;
+    BillWindow bw;
+    GraphWindow gw;
+    ingoalsWindow iw;
+    outgoalsWindow ow;
+
+    QObject::connect(&w,SIGNAL(showtransactionwindow()),&tw,SLOT(recvMainWindow()));
+    QObject::connect(&tw,SIGNAL(showMainWindow()),&w,SLOT(recvtransactionwindow()));
+
+    QObject::connect(&w,SIGNAL(showfinancialgoalswindow()),&fw,SLOT(recvMainWindow()));
+    QObject::connect(&fw,SIGNAL(showMainWindow()),&w,SLOT(recvfinancialgoalswindow()));
+
+    QObject::connect(&w,SIGNAL(showbillwindow()),&bw,SLOT(recvMainWindow()));
+    QObject::connect(&bw,SIGNAL(showMainWindow()),&w,SLOT(recvbillwindow()));
+
+    QObject::connect(&w,SIGNAL(showgraphwindow()),&gw,SLOT(recvMainWindow()));
+    QObject::connect(&gw,SIGNAL(showMainWindow()),&w,SLOT(recvgraphwindow()));
+
+    QObject::connect(&fw,SIGNAL(showingoalsWindow()),&iw,SLOT(recvfinancialgoalsWindow()));
+    QObject::connect(&iw,SIGNAL(showfinancialgoalswindow()),&fw,SLOT(recvingoalswindow()));
+
+    QObject::connect(&fw,SIGNAL(showoutgoalsWindow()),&ow,SLOT(recvfinancialgoalsWindow()));
+    QObject::connect(&ow,SIGNAL(showfinancialgoalswindow()),&fw,SLOT(recvoutgoalswindow()));
     return a.exec();
 }
