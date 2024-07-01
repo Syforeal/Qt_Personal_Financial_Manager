@@ -26,6 +26,9 @@ private slots:
     static QDate endOfMonth(const QDate& date) {
         return startOfMonth(date).addMonths(1).addDays(-1);
     }
+
+
+public slots:
     void loadAccounts();
 
 public:

@@ -61,6 +61,13 @@ ingoalsWindow::~ingoalsWindow()
 
 void ingoalsWindow::recvfinancialgoalsWindow()
 {
+    loadAccounts();
+    connect(ui->accountListView->selectionModel(), &QItemSelectionModel::currentChanged, this, [=](const QModelIndex &current) {
+        currentAccountId = current.data(Qt::UserRole + 1).toString();
+        loadsavings(currentAccountId);
+    });
+    savingModel=new QStandardItemModel(this);
+    ui->savingtableView->setModel(savingModel);
     this->show(); // 显示本界面
 }
 
@@ -103,6 +110,10 @@ void ingoalsWindow::loadsavings(const QString& accountId) {
     model->setHeaderData(4, Qt::Horizontal, tr("Category"));
     model->setHeaderData(5, Qt::Horizontal, tr("Remaining Days"));
     model->setHeaderData(6, Qt::Horizontal, tr("Id"));
+    ui->savingtableView->setSelectionMode(QAbstractItemView::ExtendedSelection); //启用多选
+    ui->savingtableView->setSelectionBehavior(QAbstractItemView::SelectRows);  // 设置选择行为为整行选择
+    ui->savingtableView->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(ui->savingtableView, &QTableView::customContextMenuRequested, this, &ingoalsWindow::on_SavingTableViewContextMenu_Requested);
 
     QString accountName = API::getAccount(accountId).name; //当前选中账户的名称
 
@@ -236,7 +247,7 @@ void ingoalsWindow::showprogress()
     QDate currentdate=QDate::currentDate() ;
     for (const QModelIndex &index : selectedIndexes) {
         amount = savingModel->data(savingModel->index(index.row(), 1)).toDouble();
-        startdate = savingModel->data(savingModel->index(index.row(), 2)).toDate()addDays(-1);
+        startdate = savingModel->data(savingModel->index(index.row(), 2)).toDate().addDays(-1);
         enddate = savingModel->data(savingModel->index(index.row(), 3)).toDate();
     }
     QList<Transaction> transactions = API::getTransactions(currentAccountId);

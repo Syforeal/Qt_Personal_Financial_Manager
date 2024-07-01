@@ -4,6 +4,7 @@
 #include "api.h"
 #include "database.h"
 
+
 #include <QMenu>
 #include <QMessageBox>
 #include <QUuid>
@@ -131,6 +132,9 @@ MainWindow::MainWindow(QWidget *parent)
         ui -> startMonthComboBox->setCurrentIndex(availableMonths.size() - 1);
     }
 
+    ui->accountListView->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(ui->accountListView, &QListView::customContextMenuRequested, this, &MainWindow::onAccountListViewContextMenuRequested);
+
     //连接账户选择与交易记录加载
     connect(ui->accountListView->selectionModel(), &QItemSelectionModel::currentChanged, this, [=](const QModelIndex &current, const QModelIndex &previous) {
         Q_UNUSED(previous);
@@ -138,10 +142,6 @@ MainWindow::MainWindow(QWidget *parent)
         loadTransactions(currentAccountId);
         loadAccountSummary(currentAccountId);
     });
-
-    // 添加账户列表视图的上下文菜单
-    ui->accountListView->setContextMenuPolicy(Qt::CustomContextMenu);
-    connect(ui->accountListView, &QListView::customContextMenuRequested, this, &MainWindow::onAccountListViewContextMenuRequested);
 
     // 添加交易记录表格视图的上下文菜单
     ui->transactionTableView->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -245,6 +245,12 @@ void MainWindow::loadAccounts() {
 
     // 设置模型到 QListView
     ui->accountListView->setModel(model);
+    connect(ui->accountListView->selectionModel(), &QItemSelectionModel::currentChanged, this, [=](const QModelIndex &current, const QModelIndex &previous) {
+        Q_UNUSED(previous);
+        currentAccountId = current.data(Qt::UserRole + 1).toString();
+        loadTransactions(currentAccountId);
+        loadAccountSummary(currentAccountId);
+    });
 }
 
 void MainWindow::loadTransactions(const QString& accountId) {
@@ -252,6 +258,18 @@ void MainWindow::loadTransactions(const QString& accountId) {
     // Populate the transaction table view
     // 清空模型中的旧数据
     transactionModel->removeRows(0, transactionModel->rowCount());
+    transactionModel->setColumnCount(5);
+    transactionModel->setHeaderData(0, Qt::Horizontal, tr("ID"));
+    transactionModel->setHeaderData(1, Qt::Horizontal, tr("Account ID"));
+    transactionModel->setHeaderData(2, Qt::Horizontal, tr("Amount"));
+    transactionModel->setHeaderData(3, Qt::Horizontal, tr("Date"));
+    transactionModel->setHeaderData(4, Qt::Horizontal, tr("Category"));
+    // transactionModel->setHeaderData(5, Qt::Horizontal, tr("Description"));
+    // 将 transactionModel 绑定到 transactionTableView
+    ui->transactionTableView->setModel(transactionModel);
+    ui->transactionTableView->setColumnHidden(0, true);  // 隐藏ID列
+    ui->transactionTableView->setSelectionMode(QAbstractItemView::ExtendedSelection); //启用多选
+    ui->transactionTableView->setSelectionBehavior(QAbstractItemView::SelectRows);  // 设置选择行为为整行选择
     QString name = API::getAccount(accountId).name;
     // 插入新数据
     for (int row = 0; row < transactions.size(); ++row) {
@@ -286,6 +304,8 @@ void MainWindow::addAccount() {
             if (API::addAccount(account)) {
                 QMessageBox::information(this, tr("Success"), tr("Account added successfully."));
                 loadAccounts();
+
+
             } else {
                 QMessageBox::warning(this, tr("Error"), tr("Failed to add account."));
             }
@@ -337,6 +357,7 @@ void MainWindow::addTransaction() {
             if (API::addTransaction(transaction)) {
                 QMessageBox::information(this, tr("Success"), tr("Transaction added successfully."));
                 loadTransactions(currentAccountId);
+                loadAccountSummary(currentAccountId);
             } else {
                 QMessageBox::warning(this, tr("Error"), tr("Failed to add transaction."));
             }
@@ -464,7 +485,7 @@ void MainWindow::editTransaction() {
         // 获取编辑后的数据
         Transaction transaction;
         transaction.id = ui->transactionTableView->model()->data(ui->transactionTableView->model()->index(index.row(), 0), Qt::DisplayRole).toString();
-        transaction.accountId = ui->transactionTableView->model()->data(ui->transactionTableView->model()->index(index.row(), 1)).toString();
+        transaction.accountId = currentAccountId;
         transaction.amount = ui->transactionTableView->model()->data(ui->transactionTableView->model()->index(index.row(), 2)).toDouble();
         transaction.date = QDate::fromString(ui->transactionTableView->model()->data(ui->transactionTableView->model()->index(index.row(), 3)).toString(), Qt::ISODate);
         transaction.category = ui->transactionTableView->model()->data(ui->transactionTableView->model()->index(index.row(), 4)).toString();
@@ -475,10 +496,9 @@ void MainWindow::editTransaction() {
         }
     }
     if (all) {
-        QMessageBox::information(this, tr("Success"), tr("Selected transaction(s) deleted successfully."));
+        QMessageBox::information(this, tr("Success"), tr("Selected transaction(s) modified successfully."));
+        loadAccountSummary(currentAccountId);
     }
-    loadTransactions(currentAccountId); // 重新加载交易记录
-
 }
 //删除交易记录
 void MainWindow::deleteTransaction() {
@@ -505,6 +525,7 @@ void MainWindow::deleteTransaction() {
         }
 
         loadTransactions(currentAccountId); // 重新加载交易记录
+        loadAccountSummary(currentAccountId);
     }
 }
 
@@ -529,7 +550,7 @@ void MainWindow::editAccount() {
         return;
     }
     // 获取编辑后的数据
-    bool ok;
+    bool ok = true;
     QString
     accountId =  ui->accountListView->model()->data(index, Qt::UserRole + 1).toString(), // 提取存储在 UserRole + 1 中的 ID
     name = ui->accountListView->model()->data(index).toString();
@@ -553,6 +574,11 @@ void MainWindow::deleteAccount() {
         bool allDeleted = true;
 
         QString accountId = ui->accountListView->model()->data(index, Qt::UserRole + 1).toString(); // 提取存储在 UserRole + 1 中的 ID
+        QList<Transaction> transactions=API::getTransactions(accountId);
+        for(int i=0;i<transactions.size();i++)
+        {
+            API::deleteTransaction(transactions[i].id);
+        }
         if (!API::deleteAccount(accountId)) {
             allDeleted = false;
             QMessageBox::warning(this, tr("Error"), tr("Failed to delete account with ID: %1").arg(accountId));
@@ -562,6 +588,16 @@ void MainWindow::deleteAccount() {
             QMessageBox::information(this, tr("Success"), tr("Selected account(s) deleted successfully."));
         }
 
-        loadAccounts();// 重新加载交易记录
+        loadAccounts();// 重新加载账户
+        transactionModel=new QStandardItemModel(this);
+        ui->transactionTableView->setModel(transactionModel);
+        ui->incomeLabel->setText("本月收入: 0");
+        ui->expenseLabel->setText("本月支出: 0");
+        connect(ui->accountListView->selectionModel(), &QItemSelectionModel::currentChanged, this, [=](const QModelIndex &current, const QModelIndex &previous) {
+            Q_UNUSED(previous);
+            currentAccountId = current.data(Qt::UserRole + 1).toString();
+            loadTransactions(currentAccountId);
+            loadAccountSummary(currentAccountId);
+        });
     }
 }

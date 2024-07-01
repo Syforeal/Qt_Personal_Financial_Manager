@@ -116,6 +116,12 @@ int main(int argc, char *argv[])
             break;
         }
     }
+    TransactionWindow tw;
+    financialgoalswindow fw;
+    BillWindow bw;
+    GraphWindow gw;
+    ingoalsWindow iw;
+    outgoalsWindow ow;
     MainWindow w;
     w.show();
     QList<Account> Accounts=API::getAccounts();
@@ -149,12 +155,6 @@ int main(int argc, char *argv[])
             }
         }
     }
-    TransactionWindow tw;
-    financialgoalswindow fw;
-    BillWindow bw;
-    GraphWindow gw;
-    ingoalsWindow iw;
-    outgoalsWindow ow;
 
     QObject::connect(&w,SIGNAL(showtransactionwindow()),&tw,SLOT(recvMainWindow()));
     QObject::connect(&tw,SIGNAL(showMainWindow()),&w,SLOT(recvtransactionwindow()));

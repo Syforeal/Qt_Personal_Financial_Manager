@@ -15,12 +15,14 @@ class ingoalsWindow : public QMainWindow
 private slots:
     void recvfinancialgoalsWindow();
     void on_ReturnButton_clicked();
-    void loadAccounts();
     void loadsavings(const QString& accountId);
     void addsaving();
     void on_SavingTableViewContextMenu_Requested(const QPoint &pos);
     void deleteSaving();
     void showprogress();
+
+public slots:
+    void loadAccounts();
 
 public:
     explicit ingoalsWindow(QWidget *parent = nullptr);

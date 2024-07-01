@@ -18,10 +18,6 @@ bool API::addAccount(const Account& account) {
     return Database::addAccount(account);
 }
 
-//bool API::updateAccount(const Account& account) {
-//    return Database::updateAccount(account);
-//}
-
 bool API::deleteAccount(const QString& accountId) {
     return Database::deleteAccount(accountId);
 }

@@ -14,11 +14,13 @@ class BillWindow : public QMainWindow
 private slots:
     void recvMainWindow();
     void on_ReturnButton_clicked();
-    void loadAccounts();
     void loadBills(const QString& accountId);
     void addBill();
     void on_BillTableViewContextMenu_Requested(const QPoint &pos);
     void deleteBill();
+
+public slots:
+    void loadAccounts();
 
 public:
     explicit BillWindow(QWidget *parent = nullptr);

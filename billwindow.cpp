@@ -63,6 +63,13 @@ BillWindow::~BillWindow()
 
 void BillWindow::recvMainWindow()
 {
+    loadAccounts();
+    connect(ui->accountListView->selectionModel(), &QItemSelectionModel::currentChanged, this, [=](const QModelIndex &current) {
+        currentAccountId = current.data().toString();
+        loadBills(currentAccountId);
+    });
+    billModel=new QStandardItemModel(this);
+    ui->billtableView->setModel(billModel);
     this->show();
 }
 
@@ -100,6 +107,11 @@ void BillWindow::loadBills(const QString& accountId) {
     model->setHeaderData(3, Qt::Horizontal, tr("Category"));
     model->setHeaderData(4, Qt::Horizontal, tr("Remaining Days"));
     model->setHeaderData(5, Qt::Horizontal, tr("Id"));
+
+    ui->billtableView->setSelectionMode(QAbstractItemView::ExtendedSelection); //启用多选
+    ui->billtableView->setSelectionBehavior(QAbstractItemView::SelectRows);  // 设置选择行为为整行选择
+    ui->billtableView->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(ui->billtableView, &QTableView::customContextMenuRequested, this, &BillWindow::on_BillTableViewContextMenu_Requested);
 
     for (int row = 0; row < bills.size()- sum; row++ ) {
         QDate startDate = QDate::currentDate();

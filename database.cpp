@@ -196,7 +196,7 @@ Transaction Database::getTransaction(const QString &transactionId) {
 
     if (db.isOpen()) {
         QSqlQuery query;
-        query.prepare("SELECT id, accountId, amount, date, category FROM transactions WHERE id = :id");
+        query.prepare("SELECT id, account_id, amount, date, category FROM transactions WHERE id = :id");
         query.bindValue(":id", transactionId);
 
         if (query.exec()) {
@@ -235,6 +235,7 @@ bool Database::updateTransaction(const Transaction &transaction) {
     query.prepare("UPDATE transactions SET account_id = :account_id, amount = :amount, date = :date, category = :category WHERE id = :id");//, description = :description
     query.bindValue(":account_id", transaction.accountId);
     query.bindValue(":amount", transaction.amount);
+    qDebug()<<transaction.amount;
     query.bindValue(":date", transaction.date);
     query.bindValue(":category", transaction.category);
     //query.bindValue(":description", transaction.description);
@@ -295,7 +296,7 @@ QList<Transaction> Database::searchTransactions(const QString &accountId, const 
         while (query.next()) {
             Transaction transaction;
             transaction.id = query.value("id").toString();
-            transaction.accountId = query.value("accountId").toString();
+            transaction.accountId = query.value("account_id").toString();
             transaction.amount = query.value("amount").toDouble();
             transaction.date = query.value("date").toDate();
             transaction.category = query.value("category").toString();

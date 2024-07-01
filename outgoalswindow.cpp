@@ -84,6 +84,11 @@ outgoalsWindow::~outgoalsWindow()
 
 void outgoalsWindow::recvfinancialgoalsWindow()
 {
+    loadAccounts();
+    connect(ui->accountListView->selectionModel(), &QItemSelectionModel::currentChanged, this, [=](const QModelIndex &current) {
+        currentAccountId = current.data(Qt::UserRole + 1).toString();
+        updateBudgetComparison();
+    });
     this->show(); // 显示本界面
 }
 
